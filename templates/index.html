@@ -2,12 +2,14 @@
 <html>
 
 <head>
-    <title>PMOI - Putta Mask On It!</title>
+    <title>0.0</title>
 
     <meta chartset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000">
-
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <link rel="shortcut icon" href="static/img/favicon.ico">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="../static/styles/style.css">
@@ -19,20 +21,18 @@
 
 <body>
     <div class="container">
-        <div id="header" class="pt-5">
-            <h3 class="title"><img class="title" src="static/img/logo.jpg"> 0.0</h3>
-            <div class="row">
+        <div id="header" class="pt-5" >
+            <div class="common"><img src="static/img/logo2.png" style="width: 100px; height: 100px;"></div>
+            <div class="common">
                 <!-- <div class="col-6">
                         <p class="title">Putta Mask On It!</p>
                     </div> -->
-                <div>
                     <form action="/action_page.php">
                         <div class="relative common"><label for="fname">Video URL:</label></div>
                         <div class="relative  common"><input type="text" id="fname" name="fname"></div>
                         <div class="relative common"><input type="submit" value="Submit"></div>
                         <!--WHAT-->
                     </form>
-                </div>
                 <!-- <div class="col-6 text-right">
                         <p class="title"><a onClick="$('#about').modal('show')" class="linkpoint">About</a> | <a href="https://hackduke.org/" target="_blank">HackDuke 2020</a></p>
                     </div> -->
@@ -61,10 +61,8 @@
 
         <hr>
 
-        <div id="middle" class="text-center ">
+        <div id="middle" >
             <img src="{{ url_for('video_feed') }}"  id="facecam">
-
-
             <video controls width="850" height="480">
                 <source src="{{ url_for('static', filename='/demo2.mp4') }}" type="video/mp4">
             </video>

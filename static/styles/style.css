@@ -53,8 +53,10 @@ div.common{
   }
 
 #middle{
-    padding: 50px 50px 50px 50px;
+    display: inline-block;
+    padding: 30px 30px 30px 30px;
     position: relative;
+    background-color: #56A750;
 }
 
 #facecam{

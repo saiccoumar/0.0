@@ -71,7 +71,7 @@ def ML():
     while True:
         # Find haar cascade to draw bounding box around face
         ret, frame = cap.read()
-        scale_percent = 10 # percent of original size
+        scale_percent = 20 # percent of original size
         width = int(frame.shape[1] * scale_percent / 100)
         height = int(frame.shape[0] * scale_percent / 100)
         dim = (width, height)
@@ -146,6 +146,18 @@ def video_feed():
 @app.route('/video_feed2')
 def video_feed2():
     return Response(preview2(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 if __name__ == '__main__':
     """p1 = Process(target=ML)
