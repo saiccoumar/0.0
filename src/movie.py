@@ -15,7 +15,7 @@ from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 import csv 
-from multiprocessing import Process
+#from multiprocessing import Process
 #Import necessary libraries
 from flask import Flask, render_template, Response
 
@@ -51,10 +51,12 @@ model.add(Dense(7, activation='softmax'))
 start = datetime.now()
 # emotions will be displayed on your face from the webcam feed
 model.load_weights('model.h5')
-
+f = open("out.csv","w+")
+writer = csv.writer(f)
 cap = cv2.VideoCapture(0)
 
 def ML():
+    global writer
     global model
     global start
     global cap
@@ -63,14 +65,13 @@ def ML():
     # dictionary which assigns each label an emotion (alphabetical order)
     emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
     # start the webcam feed
-    f = open("out.csv","w+")
-    writer = csv.writer(f)
+    
 
     
     while True:
         # Find haar cascade to draw bounding box around face
         ret, frame = cap.read()
-        scale_percent = 40 # percent of original size
+        scale_percent = 10 # percent of original size
         width = int(frame.shape[1] * scale_percent / 100)
         height = int(frame.shape[0] * scale_percent / 100)
         dim = (width, height)

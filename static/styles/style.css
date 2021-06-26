@@ -36,3 +36,29 @@ img.title {
 p.title {
     font-size: 20px;;
 }
+
+div.relative {
+
+    padding-top:0 px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;  
+    font-size:20px
+  } 
+  
+
+div.common{
+      display:inline-block;
+      max-width: 50%;
+  }
+
+#middle{
+    padding: 50px 50px 50px 50px;
+    position: relative;
+}
+
+#facecam{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
