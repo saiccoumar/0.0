@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta content="Display Webcam Stream" name="title">
+<title>Odo</title>
+<style>
+    div.relative {
+
+      padding-top:0 px;
+      padding-right: 0px;
+      padding-bottom: 0px;
+      padding-left: 0px;  
+      font-size:20px
+    } 
+    
+
+    div.common{
+        display:inline-block;
+        max-width: 50%;
+    }
+
+
+    div.absolute {
+      padding-top:0px;
+      padding-right: 0px;
+      padding-bottom: 5px;
+      padding-left: 0px;
+      
+    }
+    body {
+      margin: 30px;
+    }
+
+    h1 {
+      font-family: sans-serif;
+      
+    }
+
+    #container {
+      width: 500px;
+      height: 375px;
+      
+    }
+
+    #videoElement {
+      width: 200px;
+      height: 200px;
+      
+    }
+    
+    button {
+      margin-top: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 5px;
+      background-color: white;
+      border: 5px solid black;
+    }
+
+    button:hover {
+      background-color: yellow;
+    }
+
+    button:active {
+      background-color: yellowgreen;
+    }
+
+    .logo{
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+
+
+
+</head>
+<body>
+  <img class = "logo common" src="logo.jpg">
+  
+<div id="container">
+<video class= "absolute" autoplay="true" id="videoElement">
+</video>
+</div>
+<button id="stop">Stop Video</button>
+
+
+
+<script>
+    var video = document.querySelector("#videoElement");
+    var stopVideo = document.querySelector("#stop");
+
+    if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+          video.srcObject = stream;
+        })
+        .catch(function (err0r) {
+          console.log("Something went wrong!");
+        });
+    }
+
+    stopVideo.addEventListener("click", stop, false);
+
+    function stop(e) {
+      var stream = video.srcObject;
+      var tracks = stream.getTracks();
+
+      for (var i = 0; i < tracks.length; i++) {
+        var track = tracks[i];
+        track.stop();
+      }
+
+      video.srcObject = null;
+    }
+  </script>
+  
+</body>
+</html>

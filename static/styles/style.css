@@ -1,0 +1,64 @@
+body {
+    font-family: 'Titillium Web', sans-serif;
+}
+
+a {
+    color: #56A750 !important;
+    text-decoration: none !important;
+    -o-transition: .5s;
+    -ms-transition: .5s;
+    -moz-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
+a:hover {
+	color: #002393 !important;
+	text-decoration: none !important;
+}
+.linkpoint:hover {
+    cursor: pointer;
+}
+
+.modal-content, .card, .card-img-top {
+    border-radius: 0 !important;
+}
+.card-body {
+    font-size: 15px;
+}
+
+/* Title */
+h3.title {
+    font-size: 50px;
+}
+img.title {
+    height: 45px;
+}
+p.title {
+    font-size: 20px;;
+}
+
+div.relative {
+
+    padding-top:0 px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;  
+    font-size:20px
+  } 
+  
+
+div.common{
+      display:inline-block;
+      max-width: 50%;
+  }
+
+#middle{
+    padding: 50px 50px 50px 50px;
+    position: relative;
+}
+
+#facecam{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
