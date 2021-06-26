@@ -68,6 +68,7 @@ def convertToFrames(video):
         print('Read a new frame: ', success)
         count += 1
 
+
 def convert(milliseconds):
     seconds = milliseconds / 1000 
     hours = seconds // 3600 
@@ -77,6 +78,14 @@ def convert(milliseconds):
     seconds = round(seconds,2)
     return str(hours), str(mins), str(seconds)
 
+def convertSecs(seconds):
+    # seconds = milliseconds / 1000 
+    hours = seconds // 3600 
+    seconds %= 3600
+    mins = seconds // 60
+    seconds %= 60
+    seconds = round(seconds,2)
+    return str(hours), str(mins), str(seconds)
 def removeFromString(text1):
     text = text1
     arr = ["'","/",",","#","<",">","$","+","%","!","`","&",'*',"|","\\","{","}","?",'"',"=",":","@"," ","."]
@@ -133,12 +142,14 @@ def ML(duration):
     vid_cod = cv2.VideoWriter_fourcc(*'mp4v')
     output = cv2.VideoWriter("converted.mp4", vid_cod, 20.0, (850,480))
     start_time = time.time()
+    timestamps = [cap.get(cv2.CAP_PROP_POS_MSEC)]
     while(int(time.time() - start_time) < duration ):
         # Find haar cascade to draw bounding box around face
         ret, frame = cap.read()
         if not ret:
             break
         facecasc = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+        timestamp = cap.get((cv2.CAP_PROP_POS_MSEC))
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = facecasc.detectMultiScale(gray,scaleFactor=1.3, minNeighbors=5)
 
@@ -148,7 +159,15 @@ def ML(duration):
             cropped_img = np.expand_dims(np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0)
             prediction = model.predict(cropped_img)
             maxindex = int(np.argmax(prediction))
-            cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA) 
+
+            print((time.time() - start_time))
+            hours,minutes,seconds = convertSecs(int(time.time() - start_time))
+            print("Hours: " + hours + " Minutes: "+ minutes+" Seconds: "+ seconds)
+            timeIndex = hours + minutes + seconds
+            if emotion_dict[maxindex]:
+                cv2.imwrite("folder/reaction_processed"+"_frame%s.jpg" % timeIndex,frame)    
+            
 
         
         # cv2.imshow('Video', cv2.resize(frame,(1600,960),interpolation = cv2.INTER_CUBIC))
