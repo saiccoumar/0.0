@@ -17,7 +17,7 @@ import os
 import csv 
 #from multiprocessing import Process
 #Import necessary libraries
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 
 #Initialize the Flask app
 statDir = '../static/'
@@ -51,7 +51,7 @@ model.add(Dense(7, activation='softmax'))
 start = datetime.now()
 # emotions will be displayed on your face from the webcam feed
 model.load_weights('model.h5')
-f = open("out.csv","w+")
+f = open("out2.csv","w+")
 writer = csv.writer(f)
 cap = cv2.VideoCapture(0)
 
@@ -88,7 +88,7 @@ def ML():
             prediction = model.predict(cropped_img)
             maxindex = int(np.argmax(prediction))
             if(emotion_dict[maxindex]):
-                writer.writerow([datetime.now()-start,emotion_dict[maxindex],])
+                writer.writerow([datetime.now()-start,emotion_dict[maxindex]])
             cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
         #cv2.imshow('Video', cv2.resize(frame,(800,480),interpolation = cv2.INTER_CUBIC))
         #if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -98,7 +98,6 @@ def ML():
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
-    f.close()
     cap.release()
     cv2.destroyAllWindows()
 
@@ -139,8 +138,11 @@ def printTime():
 def index():
     return render_template('index.html')
 
-@app.route('/video_feed')
+
+@app.route('/video_feed',methods = ["POST","GET"])
 def video_feed():
+    
+
     return Response(ML(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed2')
