@@ -85,7 +85,19 @@ def removeFromString(text1):
             text = text.replace(i,'_')
     return(text)
 
-def ML():
+def countdown(t):
+    
+    while t:
+        mins, secs = divmod(t, 60)
+        timer = '{:02d}:{:02d}'.format(mins, secs)
+        print(timer, end="\r")
+        time.sleep(1)
+        t -= 1
+      
+    yield "finished"
+
+def ML(duration):
+    
     model = Sequential()
 
     model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(48,48,1)))
@@ -115,8 +127,13 @@ def ML():
     emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
 
     # start the webcam feed
+    # countdown(duration)
     cap = cv2.VideoCapture(0)
-    while True:
+    # cap = cv2.VideoCapture(video+'.mp4')
+    vid_cod = cv2.VideoWriter_fourcc(*'mp4v')
+    output = cv2.VideoWriter("converted.mp4", vid_cod, 20.0, (850,480))
+    start_time = time.time()
+    while(int(time.time() - start_time) < duration ):
         # Find haar cascade to draw bounding box around face
         ret, frame = cap.read()
         if not ret:
@@ -133,15 +150,26 @@ def ML():
             maxindex = int(np.argmax(prediction))
             cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
-        cv2.imshow('Video', cv2.resize(frame,(1600,960),interpolation = cv2.INTER_CUBIC))
+        
+        # cv2.imshow('Video', cv2.resize(frame,(1600,960),interpolation = cv2.INTER_CUBIC))
+        frame = cv2.resize(frame, (850,480))   
+        output.write(frame)
+        
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
+        # time.sleep(1)
+        # duration -= 1
+        # if duration == 0:
+        #     break
+        
+            
     cap.release()
     cv2.destroyAllWindows()
 
+# countdown(5)
+ML(10)
 # recordWebCam()
-convertToFrames('webcam')
+# convertToFrames('webcam')
 
 # for i in tick(1.0):
 #     print(i)
