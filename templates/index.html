@@ -28,7 +28,7 @@
                 <!-- <div class="col-6">
                         <p class="title">Putta Mask On It!</p>
                     </div> -->
-                <form action="/action_page.php">
+                <form action="/download" method="post">
                     <div class="relative common"><label for="fname">Video URL:</label></div>
                     <div class="relative  common"><input type="text" id="fname" name="fname"></div>
                     <div class="relative common"><input type="submit" value="Submit"></div>
@@ -64,8 +64,8 @@
 
         <div id="middle">
             <img src="{{ url_for('video_feed') }}" id="facecam">
-            <video  width="850" height="480">
-                <source src="{{ url_for('static', filename='/demo2.mp4') }}" type="video/mp4">
+            <video controls width="850" height="480">
+                <source src="{{ url_for('static', filename='/video.mp4') }}" type="video/mp4">
             </video>
             <div>
                 <!-- <form id = "myForm" action="/video_feed">

@@ -1,4 +1,3 @@
-from moviepy.editor import *
 from datetime import datetime
 import threading
 import time
@@ -15,9 +14,10 @@ from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 import csv 
+import youtube
 #from multiprocessing import Process
 #Import necessary libraries
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response, request, redirect
 
 #Initialize the Flask app
 statDir = '../static/'
@@ -51,12 +51,17 @@ model.add(Dense(7, activation='softmax'))
 start = datetime.now()
 # emotions will be displayed on your face from the webcam feed
 model.load_weights('model.h5')
-f = open("out2.csv","w+")
-writer = csv.writer(f)
+url = ""
+f = open("out2.csv", "w+")
+f.close()
+def writeToCSV(data):
+    with open("out2.csv","a",newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(data)
 cap = cv2.VideoCapture(0)
 
 def ML():
-    global writer
+
     global model
     global start
     global cap
@@ -66,7 +71,7 @@ def ML():
     emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
     # start the webcam feed
     
-
+    count = 0
     
     while True:
         # Find haar cascade to draw bounding box around face
@@ -87,9 +92,11 @@ def ML():
             cropped_img = np.expand_dims(np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0)
             prediction = model.predict(cropped_img)
             maxindex = int(np.argmax(prediction))
-            if(emotion_dict[maxindex]):
-                writer.writerow([datetime.now()-start,emotion_dict[maxindex]])
             cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+            if(emotion_dict[maxindex]):
+                writeToCSV([datetime.now()-start,emotion_dict[maxindex],np.max(prediction)])
+            #cv2.imwrite("pics/reaction" + str(count),frame) WE DONT THE COMPUTING POWER FOR THIS
+            
         #cv2.imshow('Video', cv2.resize(frame,(800,480),interpolation = cv2.INTER_CUBIC))
         #if cv2.waitKey(1) & 0xFF == ord('q'):
         #    break
@@ -139,15 +146,44 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/gallery')
+def gallery():
+    global url
+    arr = []
+    with open("out2.csv") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            time =  datetime.strptime(row[0], '%H:%M:%S.%f')
+            a_timedelta = time - datetime(1900, 1, 1)
+            seconds = a_timedelta.total_seconds()
+            arr.append((row[0],row[1],seconds))
+            print(row)
+    return render_template('gallery.html', imgs = arr, url=url)
+
 @app.route('/video_feed',methods = ["POST","GET"])
 def video_feed():
     
 
     return Response(ML(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed2')
+@app.route('/video_feed2',)
 def video_feed2():
     return Response(preview2(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+count = 0
+
+@app.route('/download',methods=['GET','POST'])
+def download():
+    global count
+    global url
+    global start
+    if request.method == "POST":
+        url = request.form["fname"]
+        print(url)
+        youtube.getVid(url, count)
+        count += 1
+        start = datetime.now()
+    return redirect("/")
 
 @app.after_request
 def add_header(r):
