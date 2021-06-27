@@ -177,12 +177,15 @@ def download():
     global count
     global url
     global start
+    global f
     if request.method == "POST":
         url = request.form["fname"]
         print(url)
         youtube.getVid(url, count)
         count += 1
         start = datetime.now()
+    f = open("out2.csv", "w+")
+    f.close()
     return redirect("/")
 
 @app.after_request
